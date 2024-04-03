@@ -2,7 +2,9 @@ import { useState } from 'react';
 import Header from '../components/VotingPage/Header';
 import BallotChoices from '../components/VotingPage/BallotChoices';
 import ErrorModal from '../components/VotingPage/ErrorModal';
+import Toast from '../components/VotingPage/Toast';
 
+const decoder = new TextDecoder('ascii');
 const ballotChoices = [
     "Tomato",
     "Potato",
@@ -14,35 +16,52 @@ const ballotChoices = [
 function VotingPage() {
     const [choice, setChoice] = useState(ballotChoices[0]);
     const [device, setDevice] = useState(null);
+    const [toast, setToast] = useState(false);
 
     function handleVoteButton(choice) {
         setChoice(choice);
     }
 
-    async function connectToHardware () {
+    async function connectToHardware() {
         try {
-            const vendorID = 0x1A86; // Arduino Uno (find USBDevice.vendorID in browser's console)
-            const newDevice = await navigator.usb.requestDevice({ filters: [ {vendorId: vendorID} ] });
-            console.log(newDevice); // check vendorID
+            const device = await navigator.serial.requestPort();
+            setDevice(device); // this will close the error modal
 
-            navigator.usb.addEventListener('disconnect', () => {
-                setDevice(null);
-            })
+            device.addEventListener('disconnect', () => {
+                setDevice(null); // this will trigger the error modal
+            });
 
-            if(newDevice.vendorId !== vendorID) {
-                setDevice(null);
-            } else {
-                setDevice(newDevice);
+            await device.open({ baudRate: 9600 });
+            const reader = device.readable.getReader();
+
+            while(device) {
+                const { value, done } = await reader.read();
+                if (done) {
+                    break;
+                }
+                
+                const string = decoder.decode(value);
+                
+                if(string.includes("CAST_VOTE")){
+                    setToast(true);
+                    setTimeout(() => {
+                        setToast(false);
+                    }, 3500);
+                }
+
+                console.log(string);
             }
-        } catch (error) {
-            setDevice(null);
+
+        } catch(e) {
+            console.error(e);
+            setDevice(null); // this will trigger the error modal
         }
     }
-
 
     return(
         <>
             { device ? null : <ErrorModal buttonHandler={ connectToHardware } />}
+            <Toast show={toast}/>
             <div className="flex flex-col bg-gray-100 min-h-screen overflow-hidden">
                 <Header/>
 
