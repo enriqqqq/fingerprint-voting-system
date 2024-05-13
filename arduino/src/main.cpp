@@ -23,6 +23,8 @@
 // For UNO and others without hardware serial, we must use software serial...
 // pin #2 is IN from sensor (ORANGE wire)
 // pin #3 is OUT from arduino  (WHITE wire)
+// VCC (PURPLE WIRE)
+// GND (BLUE WIRE)
 // Set up the serial port to use softwareserial..
 SoftwareSerial mySerial(2, 3);
 
@@ -38,7 +40,7 @@ Adafruit_Fingerprint finger = Adafruit_Fingerprint(&mySerial);
 
 uint8_t id;
 
-uint8_t getFingerprintEnroll();
+uint8_t getFingerprintEnroll(); uint8_t downloadFingerprintTemplate(uint16_t id); void printHex(int num, int precision);
 
 void setup()
 {
@@ -229,7 +231,6 @@ uint8_t getFingerprintEnroll() {
     // Serial.println("Unknown error");
     return p;
   }
-
-  finger.emptyDatabase();
+  
   return true;
 }
