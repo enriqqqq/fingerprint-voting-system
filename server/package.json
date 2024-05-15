@@ -3,15 +3,25 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "devstart": "nodemon ./bin/www",
+    "serverstart": "SET DEBUG=server:* & npm start"
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "connect-mongo": "^5.1.0",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
+    "dotenv": "^16.4.5",
     "express": "^4.19.1",
+    "express-async-handler": "^1.2.0",
+    "express-session": "^1.18.0",
     "http-errors": "~1.6.3",
     "jade": "^0.29.0",
+    "mongoose": "^8.3.4",
     "morgan": "~1.9.1",
-    "nodemon": "^3.1.0"
+    "nodemon": "^3.1.0",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0"
   }
 }
