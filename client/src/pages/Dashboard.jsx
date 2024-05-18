@@ -1,15 +1,23 @@
+import { useState } from "react";
+import EventCard from "../components/Dashboard/EventCard";
+import Sidebar from "../components/Dashboard/Sidebar";
+import DashboardInfo from "../components/Dashboard/DashboardInfo";
+import VotingStatistic from "../components/Dashboard/VotingStatistic";
+import AddButton from "../components/Dashboard/AddButton";
+import NewEventModal from "../components/Dashboard/NewEventModal";
+
 const events = [
     {
         id: 1,
-        title: "Event 1",
-        description: "Description 1",
+        title: "6A Class Leader Election",
+        description: "This is a description of your voting event.",
         candidateCount: 3,
         votersCount: 50,
     },
     {
         id: 2,
         title: "Event 2",
-        description: "Description 2",
+        description: "No description available.",
         candidateCount: 5,
         votersCount: 53,
     },
@@ -23,27 +31,31 @@ const events = [
 ]
 
 function Dashboard(){
+    const [showModal, setShowModal] = useState(false);
+    console.log();
     return(
         <>
-            <h1 className="text-xl font-bold">Dashboard</h1>
-            <p className="mt-3">Welcome, User</p>
-            <div className="grid grid-cols-3 gap-4 mt-3">
-                {events.map(event => (
-                    <div key={event.id} className="bg-white p-3 rounded border border-black">
-                        <h1 className="text-lg font-bold">{event.title}</h1>
-                        <p>{event.description}</p>
-                        <p>Candidates: {event.candidateCount}</p>
-                        <p>Voters: {event.votersCount}</p>
-                        <div className="flex">
-                            <button className="bg-slate-400 px-7 py-2 rounded hover:brightness-75 font-semibold">Start</button>
-                            <button className="bg-slate-400 px-7 py-2 rounded hover:brightness-75 font-semibold ml-2">Edit</button>
-                        </div>
+            {showModal && <NewEventModal closeModal={() => setShowModal(false)} />}
+            <div className="grid grid-cols-[1fr_5fr] h-screen bg-slate-50">
+                <Sidebar />
+                <div className="px-10 py-10 flex flex-col overflow-auto">
+                    <h1 className="text-xl font-bold">Dashboard</h1>
+                    <p>Welcome, User</p>
+                    <div className="flex gap-7 mt-3">
+                        <DashboardInfo/>
+                        <VotingStatistic />
                     </div>
-                ))}
+                    <p className="text-xl font-bold mt-7">Your Events</p>
+                    <div className="grid grid-cols-[repeat(auto-fill,minmax(380px,1fr))] gap-4 mt-3">
+                        {
+                            events.map(event => (
+                                <EventCard key={event.id} {...event} />
+                            ))
+                        }
+                    </div>  
+                </div>
             </div>
-            <div className="absolute bottom-0 right-0">
-                <button className="bg-slate-400 px-7 py-2 rounded hover:brightness-75 font-semibold">+</button>
-            </div>
+            <AddButton openModal={() => setShowModal(true)} />
         </>
     )
 }
