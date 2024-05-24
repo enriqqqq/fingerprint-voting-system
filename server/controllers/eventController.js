@@ -7,23 +7,19 @@ exports.create_post = [
         .trim()
         .isLength({ min: 1 })
         .withMessage("Title must be specified.")
-        .isAlpha()
-        .withMessage("Title has non-alphabetic characters."),
+        .matches(/^[a-zA-Z0-9 ]*$/)
+        .withMessage("Title must be alphanumeric and can contain spaces."),
     body("description")
         .trim()
         .escape(),
-    body("event_id")
-        .isMongoId()
-        .withMessage("SSomething went wrong. Please try again."),
 
     asyncHandler(async (req, res, next) => {
         const errors = validationResult(req);
-
         if(!errors.isEmpty()) {
             const firstErrors = {};
             errors.array().forEach((error) => {
-                if(!firstErrors[error.param]) {
-                    firstErrors[error.param] = error.msg;
+                if(!firstErrors[error.path]) {
+                    firstErrors[error.path] = error.msg;
                 }
             });
 
@@ -32,22 +28,62 @@ exports.create_post = [
         }
 
         const event = new Event({
-            user_id: req.user._id,
             title: req.body.title,
-            description: req.body.description
-        });
+            description: req.body.description,
+            user_id: req.user._id
+        }); 
 
-        event.save((err) => {
-            if(err) {
-                return next(err);
-            }
-
-            res.status(201).json(event);
-        });
+        await event.save();
+        res.status(200).json(event);
     })
 ]
 
 exports.list_get = asyncHandler(async (req, res, next) => {
     const events = await Event.find({ user_id: req.user._id });
-    res.json(events);
+    res.status(200).json(events);
 });
+
+exports.get_event = asyncHandler(async (req, res, next) => {
+    const event = await Event.findById(req.params.id);
+    res.status(200).json(event);
+});
+
+exports.update_event = [
+    body("title")
+        .trim()
+        .isLength({ min: 1 })
+        .withMessage("Title must be specified.")
+        .matches(/^[a-zA-Z0-9 ]*$/)
+        .withMessage("Title must be alphanumeric and can contain spaces."),
+    body("description")
+        .trim()
+        .escape(),
+
+    asyncHandler(async (req, res, next) => {
+        const errors = validationResult(req);
+        if(!errors.isEmpty()) {
+            const firstErrors = {};
+            errors.array().forEach((error) => {
+                if(!firstErrors[error.path]) {
+                    firstErrors[error.path] = error.msg;
+                }
+            });
+
+            res.status(400).json({ errors: firstErrors });
+            return;
+        }
+
+        const event = await Event.findById(req.params.id);
+        event.title = req.body.title;
+        event.description = req.body.description;
+
+        await event.save();
+        res.status(200).json(event);
+    })
+];
+
+exports.delete_event = asyncHandler(async (req, res, next) => {
+    await Event.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: 'Event deleted successfully.' });
+});
+

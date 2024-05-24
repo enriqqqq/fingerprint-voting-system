@@ -42,7 +42,7 @@ exports.create_post = [
         }
 
         // hash password
-        bcrypt.hash(req.body.password, 10, (err, hashedPassword) => {
+        bcrypt.hash(req.body.password, 10, async (err, hashedPassword) => {
             // if error, pass to error handler
             if(err) {
                 return next(err);
@@ -55,12 +55,8 @@ exports.create_post = [
             });
 
             // save user
-            user.save((err) => {
-                if(err) {
-                    return next(err);
-                }
-                res.status(200);
-            });
+            await user.save();
+            res.status(201).json(user);
         });
     })
 ]

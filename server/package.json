@@ -16,6 +16,7 @@
     "express": "^4.19.1",
     "express-async-handler": "^1.2.0",
     "express-session": "^1.18.0",
+    "express-validator": "^7.0.1",
     "http-errors": "~1.6.3",
     "jade": "^0.29.0",
     "mongoose": "^8.3.4",

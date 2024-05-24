@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import EventCard from "../components/Dashboard/EventCard";
 import Sidebar from "../components/Dashboard/Sidebar";
 import DashboardInfo from "../components/Dashboard/DashboardInfo";
@@ -32,7 +32,20 @@ const events = [
 
 function Dashboard(){
     const [showModal, setShowModal] = useState(false);
-    console.log();
+
+    useEffect(() => {
+        (async() => {
+            try {
+                const response = await fetch('/test/isauth');
+                console.log(response);
+                const data = await response.json();
+                console.log(data);
+            } catch (error) {
+                console.log(error);
+            }
+        })();
+    }, []);
+
     return(
         <>
             {showModal && <NewEventModal closeModal={() => setShowModal(false)} />}
