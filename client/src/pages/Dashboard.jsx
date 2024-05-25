@@ -36,7 +36,7 @@ function Dashboard(){
     useEffect(() => {
         (async() => {
             try {
-                const response = await fetch('/test/isauth');
+                const response = await fetch('/test/api/events');
                 console.log(response);
                 const data = await response.json();
                 console.log(data);
