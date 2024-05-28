@@ -2,9 +2,10 @@ import { useState } from "react";
 import propTypes from 'prop-types';
 import { IoClose } from "react-icons/io5";
 import { useUser } from "../../contexts/userContext";
+import ErrorMessage from "../ErrorMessage";
 
-function NewEventModal({ closeModal }) {
-    const [error, setError] = useState(null);  
+function NewEventModal({ closeModal, fetchEvents }) {
+    const [errors, setErrors] = useState({});  
     const { user } = useUser();
 
     const submitHandler = async (e) => {
@@ -12,7 +13,7 @@ function NewEventModal({ closeModal }) {
         const title = e.target.title.value;
         const description = e.target.description.value;
         
-        const response = await fetch('/api/events', {
+        const response = await fetch('/test/api/events', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -26,13 +27,14 @@ function NewEventModal({ closeModal }) {
 
         if(response.status === 201) {
             closeModal();
+            fetchEvents();
         }
         else if (response.status === 400) {
             const data = await response.json();
-            setError(data.errors.title);
+            setErrors(data.errors);
         }
         else {
-            setError('Something went wrong. Please try again.');
+            setErrors({ title: "An error occurred. Please try again." });
         }
     }
 
@@ -48,12 +50,13 @@ function NewEventModal({ closeModal }) {
                     <form onSubmit={submitHandler} className="mt-5 flex flex-col">
                         <div className="flex flex-col gap-1">
                             <label htmlFor="title" className="text-xs font-bold text-gray-600">TITLE</label>
-                            <input type="text" id="title" className="border border-black rounded px-2 py-2" />
-                            { error && <ErrorMessage string='Title is required'/>}
+                            <input type="text" name="title" id="title" className="border border-black rounded px-2 py-2" />
+                            { errors.title ? <ErrorMessage string={errors.title}/> : null }
                         </div>
                         <div className="flex flex-col mt-3 gap-1">
                             <label htmlFor="description" className="text-xs font-bold text-gray-600">DESCRIPTION</label>
-                            <textarea name="" id="description" cols="30" rows="5" className="border border-black rounded px-2 py-2" placeholder='(Optional)'></textarea>
+                            <textarea name="description" id="description" cols="30" rows="5" className="border border-black rounded px-2 py-2" placeholder='(Optional)'></textarea>
+                            { errors.description ? <ErrorMessage string={errors.description}/> : null }
                         </div>
                         <button type="submit" className="bg-slate-400 text-black mt-3 px-7 py-2 rounded hover:brightness-75 font-semibold">Create</button>
                     </form>
@@ -63,19 +66,8 @@ function NewEventModal({ closeModal }) {
     )
 }
 
-function ErrorMessage({ string }) {
-    return(
-        <>
-            <p className="text-xs text-red-500">{string}</p>
-        </>
-    )
-}
-
-ErrorMessage.propTypes = {
-    string: propTypes.string.isRequired
-}
-
 NewEventModal.propTypes = {
+    fetchEvents: propTypes.func.isRequired,
     closeModal: propTypes.func.isRequired
 }
 

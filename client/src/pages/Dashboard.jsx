@@ -1,59 +1,53 @@
 import { useEffect, useState } from "react";
+import { useUser } from "../contexts/userContext";
 import EventCard from "../components/Dashboard/EventCard";
-import Sidebar from "../components/Dashboard/Sidebar";
+import Sidebar from "../components/Sidebar";
 import DashboardInfo from "../components/Dashboard/DashboardInfo";
 import VotingStatistic from "../components/Dashboard/VotingStatistic";
 import AddButton from "../components/Dashboard/AddButton";
 import NewEventModal from "../components/Dashboard/NewEventModal";
 
-const events = [
-    {
-        id: 1,
-        title: "6A Class Leader Election",
-        description: "This is a description of your voting event.",
-        candidateCount: 3,
-        votersCount: 50,
-    },
-    {
-        id: 2,
-        title: "Event 2",
-        description: "No description available.",
-        candidateCount: 5,
-        votersCount: 53,
-    },
-    {
-        id: 3,
-        title: "Event 3",
-        description: "Description 3",
-        candidateCount: 3,
-        votersCount: 67,
-    }
-]
-
 function Dashboard(){
     const [showModal, setShowModal] = useState(false);
+    const [events, setEvents] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [fetchEvents, setFetchEvents] = useState(true);
+    const { user } = useUser();
 
     useEffect(() => {
         (async() => {
             try {
-                const response = await fetch('/test/api/events');
-                console.log(response);
-                const data = await response.json();
-                console.log(data);
+                if(fetchEvents) {
+                    setLoading(true);
+                    const response = await fetch('/test/api/events');
+                    console.log(response);
+                    const data = await response.json();
+                    setEvents(data);
+                    console.log(data);
+                    
+                    // TODO count the number of candidates and voters of each event
+                    data.forEach(event => {
+                        event.candidateCount = 20;
+                        event.voterCount = 20;
+                    });
+                }
             } catch (error) {
                 console.log(error);
+            } finally {
+                setLoading(false);
+                setFetchEvents(false);
             }
         })();
-    }, []);
+    }, [fetchEvents]);
 
     return(
         <>
-            {showModal && <NewEventModal closeModal={() => setShowModal(false)} />}
+            {showModal && <NewEventModal closeModal={ () => setShowModal(false) } fetchEvents={ () => setFetchEvents(true) } />}
             <div className="grid grid-cols-[1fr_5fr] h-screen bg-slate-50">
                 <Sidebar />
                 <div className="px-10 py-10 flex flex-col overflow-auto">
                     <h1 className="text-xl font-bold">Dashboard</h1>
-                    <p>Welcome, User</p>
+                    <p>Welcome, { user.username }</p>
                     <div className="flex gap-7 mt-3">
                         <DashboardInfo/>
                         <VotingStatistic />
@@ -61,9 +55,13 @@ function Dashboard(){
                     <p className="text-xl font-bold mt-7">Your Events</p>
                     <div className="grid grid-cols-[repeat(auto-fill,minmax(380px,1fr))] gap-4 mt-3">
                         {
-                            events.map(event => (
-                                <EventCard key={event.id} {...event} />
-                            ))
+                            loading 
+                                ? <p>Loading...</p> 
+                                : events.length === 0
+                                    ? <p>No events found</p>
+                                    : events.map(event => (
+                                        <EventCard key={event._id} event={event} fetchEventsHandler={ () => setFetchEvents(true) } />
+                                    ))
                         }
                     </div>  
                 </div>

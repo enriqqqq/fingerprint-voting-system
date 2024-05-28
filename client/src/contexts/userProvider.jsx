@@ -53,12 +53,12 @@ function UserProvider({ children }) {
 
                 if(data.user) {
                     setUser(data.user);
-                    console.log(data.user);
                 }
                 else {
                     setUser(null);
                 }
             } catch (error) {
+                setUser(null);
                 console.log(error);
             } finally {
                 setLoading(false);

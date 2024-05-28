@@ -1,6 +1,6 @@
 import { FaFingerprint } from "react-icons/fa6";
 import { IoLogOutOutline } from "react-icons/io5";
-import { useUser } from "../../contexts/userContext";
+import { useUser } from "../contexts/userContext";
 
 function Sidebar(){
     const { logout } = useUser();

@@ -34,7 +34,7 @@ exports.create_post = [
         }); 
 
         await event.save();
-        res.status(200).json(event);
+        res.status(201).json(event);
     })
 ]
 
@@ -45,6 +45,11 @@ exports.list_get = asyncHandler(async (req, res, next) => {
 
 exports.get_event = asyncHandler(async (req, res, next) => {
     const event = await Event.findById(req.params.id);
+
+    if(!event) {
+        res.status(404).json({ message: 'Event not found.' });
+        return;
+    }
     res.status(200).json(event);
 });
 
@@ -83,7 +88,12 @@ exports.update_event = [
 ];
 
 exports.delete_event = asyncHandler(async (req, res, next) => {
-    await Event.findByIdAndDelete(req.params.id);
+    const result = await Event.findByIdAndDelete(req.params.id);
+
+    if(!result) {
+        res.status(404).json({ message: 'Event not found.' });
+        return;
+    }
     res.status(200).json({ message: 'Event deleted successfully.' });
 });
 
