@@ -11,10 +11,12 @@ function EditEventPage() {
     const [loading, setLoading] = useState(true);
     const [event, setEvent] = useState({});
     const [showNewVoterModal, setShowNewVoterModal] = useState(false);
+    const [fetchVoters, setFetchVoters] = useState(true);
 
     useEffect(() => {
         (async() => {
             try {
+                // Fetch the event data from the server
                 setLoading(true);
                 const response = await fetch(`/test/api/events/${id}`);
                 
@@ -39,7 +41,7 @@ function EditEventPage() {
             ? <p>Loading...</p> 
             : 
             <>
-                { showNewVoterModal && <NewVoterModal closeModal={() => {setShowNewVoterModal(false)}} /> }
+                { showNewVoterModal && <NewVoterModal closeModal={() => {setShowNewVoterModal(false)}} setFetchVoters={setFetchVoters} /> }
                 <div className="grid grid-cols-[1fr_5fr] h-screen bg-slate-50">
                     <Sidebar />
                     <div className="px-10 py-10 flex flex-col">
@@ -47,7 +49,7 @@ function EditEventPage() {
                         <p className="text-sm">{ id }</p>
                         <div className="flex flex-col flex-1">
                             <EventForm event={event} />
-                            <VotersSection openFormModal={()=>{setShowNewVoterModal(true)}} />
+                            <VotersSection openFormModal={()=>{setShowNewVoterModal(true)}} fetchVoters={fetchVoters} setFetchVoters={setFetchVoters}/>
                         </div>
                         <button className="bg-slate-400 text-black px-7 py-2 rounded hover:brightness-75 font-semibold self-start mt-auto">Start</button>
                     </div>

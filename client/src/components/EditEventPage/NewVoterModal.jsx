@@ -6,7 +6,7 @@ import { TbFingerprintOff, TbFingerprint } from "react-icons/tb";
 import { useHardware } from "../../contexts/hardwareContext";
 import { useState } from "react";
 
-function NewVoterModal({ closeModal }) {
+function NewVoterModal({ closeModal, setFetchVoters }) {
     const { device, fingerprint, setFingerprint, connectToHardware } = useHardware();
     const [errors, setErrors] = useState({});
 
@@ -28,6 +28,7 @@ function NewVoterModal({ closeModal }) {
         if (response.status === 201) {
             closeModal();
             setFingerprint([]);
+            setFetchVoters(true);
         } else if (response.status === 400) {
             const data = await response.json();
             setErrors(data.errors);
@@ -73,7 +74,8 @@ function NewVoterModal({ closeModal }) {
 }
 
 NewVoterModal.propTypes = {
-    closeModal: propTypes.func.isRequired
+    closeModal: propTypes.func.isRequired,
+    setFetchVoters: propTypes.func.isRequired
 }
 
 export default NewVoterModal;

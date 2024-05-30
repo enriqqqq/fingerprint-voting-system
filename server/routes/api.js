@@ -33,6 +33,12 @@ router.delete('/events/:id/delete', isAuth, EventController.delete_event);
 // GET request to get all voters in an event of a user
 router.get('/events/:event_id/voters', isAuth, VoterController.list_get_event);
 
+// DELETE request to delete voters
+router.delete('/events/:event_id/voters/:voter_id/delete', isAuth, VoterController.delete_post);
+
+// PUT request to update voters
+router.put('/events/:event_id/voters/:voter_id/update', isAuth, VoterController.update_post);
+
 // GET request to get all voters registered by a user
 router.get('/voters', isAuth, VoterController.list_get);
 
