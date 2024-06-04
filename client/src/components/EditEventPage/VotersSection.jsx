@@ -113,6 +113,7 @@ function VotersSection({ openFormModal, fetchVoters, setFetchVoters}) {
 function EditableInput({ voter }) {
     const [editing, setEditing] = useState(false);
     const [value, setValue] = useState(voter.name);
+    const [originalValue, setOriginalValue] = useState(voter.name);
     const [error, setError] = useState("");
 
     const updateValue = async () => {
@@ -129,6 +130,7 @@ function EditableInput({ voter }) {
             
             if(response.status === 200) {
                 setValue(value);
+                setOriginalValue(value);
             } else {
                 const data = await response.json();
                 if(data.errors.name) {
@@ -136,6 +138,8 @@ function EditableInput({ voter }) {
                 } else {
                     setError("An error occurred. Please try again.");
                 }
+                setValue(originalValue);
+                setEditing(false);
             }
             
         } catch(error) {
@@ -158,11 +162,11 @@ function EditableInput({ voter }) {
                         <button 
                             onClick={() => {
                                     setEditing(false);
-                                    setValue(voter.name);
+                                    setValue(originalValue);
                                 }
                             }>Cancel</button>
                       </>
-                    : <button onClick={() => setEditing(true)}>Edit</button>
+                    : <button onClick={() => {setEditing(true); if(error) {setError("")}}}>Edit</button>
             }
         </div>
     )

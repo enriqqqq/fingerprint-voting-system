@@ -4,6 +4,7 @@ const router = express.Router();
 const EventController = require('../controllers/eventController');
 const UserController = require('../controllers/userController');
 const VoterController = require('../controllers/voterController');
+const BallotController = require('../controllers/ballotController');
 
 const { isAuth } = require('../lib/authMiddleware');
 
@@ -44,6 +45,22 @@ router.get('/voters', isAuth, VoterController.list_get);
 
 // POST request to create a new voter
 router.post('/voters', isAuth, VoterController.create_post);
+
+/* ---------------------------
+    BALLOTS ROUTE
+--------------------------- */
+
+// POST request to create a new ballot
+router.post('/ballots', isAuth, BallotController.create_post);
+
+// GET request to get all ballots in an event of a user
+router.get('/events/:event_id/ballots', isAuth, BallotController.list_get_event);
+
+// DELETE request to delete ballots
+router.delete('/events/:event_id/ballots/:ballot_id/delete', isAuth, BallotController.delete_post);
+
+// PUT request to update ballots
+router.put('/events/:event_id/ballots/:ballot_id/update', isAuth, BallotController.update_post);
 
 /* ---------------------------
     USERS ROUTE

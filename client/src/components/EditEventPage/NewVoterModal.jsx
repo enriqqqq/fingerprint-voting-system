@@ -24,7 +24,7 @@ function NewVoterModal({ closeModal, setFetchVoters }) {
             },
             body: JSON.stringify({ name, fingerprint, event_id: id })
         });
-
+        
         if (response.status === 201) {
             closeModal();
             setFingerprint([]);
