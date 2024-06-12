@@ -3,115 +3,76 @@ import Header from '../components/VotingPage/Header';
 import BallotChoices from '../components/VotingPage/BallotChoices';
 import ErrorModal from '../components/VotingPage/ErrorModal';
 import Toast from '../components/VotingPage/Toast';
-
-// const decoder = new TextDecoder('ascii');
-const ballotChoices = [
-    "Tomato",
-    "Potato",
-    "Carrot",
-    "Cucumber",
-    "Broccolli",
-]
-
-const DOWNLOAD_FINGERPRINT = 0x01;
-const fingerprint_template_buffer = [];
-let startReadingUART = false;
+import { useHardware } from '../contexts/hardwareContext';
+import { useNavigate, useParams } from 'react-router-dom';
 
 function VotingPage() {
-    const [choice, setChoice] = useState(ballotChoices[0]);
-    const [device, setDevice] = useState(null);
-    const [toast, setToast] = useState(false);
+    const navigate = useNavigate();
+    const { id } = useParams();
+    const [ballots, setBallots] = useState([]);
+    const { connectToHardware, device, ballotSelected, selectedBallotDisplay, setSelectedBallotDisplay, toast } = useHardware();
 
     useEffect(() => {
-        // TODO:
-        // 1. load ballot choices from mongodb server
-        // 2. load voters fingerprint templates from mongodb server
-        // 3. load voters fingerprint templates to hardware through UART
-    }, []);
+        // get ballots from the server
+        (async() => {
+            try {
+                // verify if voting requirements is met
+                const isValid = await fetch(`/test/api/events/${id}/start`);
+                if(isValid.status !== 200 && isValid.status !== 304) {
+                    navigate('/');
+                    return;
+                }
+
+                // check if the event is valid
+                const isValidJSON = await isValid.json();
+                if(isValidJSON.code !== 0) {
+                    navigate('/');
+                    return;
+                }
+
+                // get ballots from the server
+                const ballots = await fetch(`/test/api/events/${id}/ballots`);
+                if(ballots.status !== 200) {
+                    navigate('/');
+                    return;
+                }
+
+                // get the ballots data
+                const ballotsData = await ballots.json();
+                setBallots(ballotsData.ballots);
+
+                if(!device) {
+                    navigate('/');
+                    return;
+                }
+            } catch(error) {
+                console.log(error);
+            }
+        })();
+
+    }, [id, navigate]); // eslint-disable-line react-hooks/exhaustive-deps
 
     function handleVoteButton(choice) {
-        setChoice(choice);
-    }
-
-    async function connectToHardware() {
-        try {
-            const device = await navigator.serial.requestPort();
-            setDevice(device); // this will close the error modal
-
-            device.addEventListener('disconnect', () => {
-                setDevice(null); // this will trigger the error modal
-            });
-
-            await device.open({ baudRate: 9600 });
-            const reader = device.readable.getReader();
-            
-            while(device) {
-                const { value, done } = await reader.read();
-                if (done) {
-                    break;
-                }
-                
-                if(value) {
-                    for(let i = 0; i < value.length; i++) {
-                        if(value[i] === DOWNLOAD_FINGERPRINT && !startReadingUART) {
-                            startReadingUART = true;
-                        }
-
-                        if(startReadingUART && fingerprint_template_buffer.length < 512) {
-                            fingerprint_template_buffer.push(value[i]);
-                        }
-
-                        if(fingerprint_template_buffer.length === 512) {
-                            startReadingUART = false;
-                        }
-                    }
-                }
-                
-                // testing purposes
-                // const string = decoder.decode(value);
-                // if(string.includes("CAST_VOTE")){
-                //     setToast(true);
-                //     setTimeout(() => {
-                //         setToast(false);
-                //     }, 3500);
-                // }
-                // console.log(string);
-                // console.log(done);
-
-                if(fingerprint_template_buffer.length === 512) {
-                    // TODO: send fingerprint_template to hardware through UART
-                    // and match with fingerprints uploaded
-                    setToast(true);
-                    setTimeout(() => {
-                        setToast(false);
-                    }, 3500);
-
-                    fingerprint_template_buffer.length = 0;
-                }
-            }
-
-        } catch(e) {
-            console.error(e);
-            setDevice(null); // this will trigger the error modal
-        }
+        setSelectedBallotDisplay(choice._id);
+        ballotSelected.current = choice;
     }
 
     return(
         <>
             { device ? null : <ErrorModal buttonHandler={ connectToHardware } />}
-            <Toast show={toast}/>
+            <Toast show={toast.show} message={toast.message}/>
             <div className="flex flex-col bg-gray-100 min-h-screen overflow-hidden">
                 <Header/>
 
                 {/* display all ballot choices */}
                 <div className="flex justify-center flex-wrap gap-8 px-8 py-12">
                     {
-                        ballotChoices.map((ballotChoice, index) => {
+                        ballots.map((ballotChoice) => {
                             return <BallotChoices 
-                                key={index} 
-                                voteButtonHandler={handleVoteButton}
+                                key={ballotChoice._id} 
                                 ballotChoice={ballotChoice}
-                                selected={choice === ballotChoice}
+                                voteButtonHandler={handleVoteButton}
+                                selected={selectedBallotDisplay === ballotChoice._id}
                             />
                         })
                     }

@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react';
-import { IoMdAdd } from "react-icons/io";
 import propTypes from 'prop-types'
 import ErrorMessage from '../ErrorMessage';
 import { useParams } from 'react-router-dom';
 import { MdEdit } from "react-icons/md";
 import { IoClose } from "react-icons/io5";
-import { IoMdSave } from "react-icons/io";
+import { IoMdSave, IoMdAdd } from "react-icons/io";
 
 function BallotsSection({ openFormModal, fetchBallots, setFetchBallots }) {
     const [ballots, setBallots] = useState([]);
@@ -22,7 +21,6 @@ function BallotsSection({ openFormModal, fetchBallots, setFetchBallots }) {
                         setBallots([]);
                     } else {
                         const data = await response.json();
-                        console.log(data.ballots);
                         setBallots(data.ballots);
                     }
                 }

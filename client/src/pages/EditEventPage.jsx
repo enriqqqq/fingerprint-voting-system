@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useHardware } from "../contexts/hardwareContext";
 import Sidebar from "../components/Sidebartest";
 import EventForm from "../components/EditEventPage/EventForm";
 import VotersSection from "../components/EditEventPage/VotersSection";
@@ -16,6 +17,7 @@ function EditEventPage() {
     const [showNewBallotModal, setShowNewBallotModal] = useState(false);
     const [fetchVoters, setFetchVoters] = useState(true);
     const [fetchBallots, setFetchBallots] = useState(true);
+    const { connectToHardware, startVotingEvent } = useHardware();
 
     useEffect(() => {
         (async() => {
@@ -40,6 +42,29 @@ function EditEventPage() {
         })()
     }, [id, navigate]);
 
+    const startVoting = async () => {
+        const res = await startVotingEvent(id);
+
+        if(res.code == 0x01) {
+            await connectToHardware();
+            return;
+        }
+
+        if(res.code == 0x02) {
+            // show the message
+            console.log(res.message);
+            return;
+        }
+
+        if(res.code == 0x00) {
+            navigate(`/voting/${id}`);
+        }
+
+        // on /voting/id, run a useEffect.
+        // to load the ballots,
+        // to load fingerprints to the sensor
+    }
+
     return (
         loading 
             ? <p>Loading...</p> 
@@ -58,7 +83,7 @@ function EditEventPage() {
                             <VotersSection openFormModal={()=>{setShowNewVoterModal(true)}} fetchVoters={fetchVoters} setFetchVoters={setFetchVoters}/>
                             <BallotsSection openFormModal={()=>{setShowNewBallotModal(true)}} fetchBallots={fetchBallots} setFetchBallots={setFetchBallots}/>
                         </div>
-                        <button className="bg-slate-400 text-black px-7 py-2 rounded hover:brightness-75 font-semibold self-start mt-auto">Start</button>
+                        <button className="bg-slate-400 text-black px-7 py-2 rounded hover:brightness-75 font-semibold self-start mt-auto" onClick={startVoting}>Start</button>
                     </div>
                 </div>
             </>

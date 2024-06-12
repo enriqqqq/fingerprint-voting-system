@@ -3,9 +3,11 @@ import Icon from '@mdi/react';
 import { mdiAccount, mdiBallot } from '@mdi/js';
 import propTypes from 'prop-types';
 import { useNavigate } from "react-router-dom";
+import { useHardware } from "../../contexts/hardwareContext";
 
 function EventCard({ event, fetchEventsHandler }) {
     const navigate = useNavigate();
+    const { connectToHardware, startVotingEvent, switchToLoadMode, votersToLoad, votingEventId } = useHardware();
 
     async function deleteEvent() {
         try {
@@ -18,6 +20,39 @@ function EventCard({ event, fetchEventsHandler }) {
             }
         } catch (error) {
             console.log(error);
+        }
+    }
+
+    const startVoting = async () => {
+        const res = await startVotingEvent(event._id);
+
+        if(res.code == 0x01) {
+            await connectToHardware();
+            return;
+        }
+
+        if(res.code == 0x02) {
+            // show the message
+            console.log(res.message);
+            return;
+        }
+
+        const response = await fetch(`/test/api/events/${event._id}/voters`);
+
+        if(response.status !== 200) {
+            console.log('Error');
+            return;
+        }
+
+        const data = await response.json();
+
+        votersToLoad.current = data.voters;
+        votingEventId.current = event._id;
+
+        await switchToLoadMode();
+
+        if(res.code == 0x00) {
+            navigate(`/voting/${event._id}`);
         }
     }
 
@@ -34,7 +69,7 @@ function EventCard({ event, fetchEventsHandler }) {
                 <p className="text-sm">{event.voterCount} voters</p>
             </div>
             <div className="flex items-center justify-between">
-                <button onClick={null} className="bg-slate-400 px-7 py-2 rounded hover:brightness-75 font-semibold">Start</button>
+                <button onClick={startVoting} className="bg-slate-400 px-7 py-2 rounded hover:brightness-75 font-semibold">Start</button>
                 <div className="flex gap-1">
                     <div className="" onClick={() => { navigate(`/events/${event._id}`) }}>
                         <MdEdit className="bg-white text-2xl cursor-pointer rounded hover:brightness-75"/>

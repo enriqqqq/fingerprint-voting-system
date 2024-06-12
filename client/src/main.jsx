@@ -26,7 +26,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             {/* If the user is not authenticated, they will be redirected to the login page */}
             <Route element={ <RequireAuth/> }>
               <Route path="/" element={<Dashboard />} />
-              <Route path="/voting" element={<VotingPage />} />
+              <Route path="/voting/:id" element={<VotingPage />} />
               <Route path="/events/:id" element={<EditEventPage />} />
             </Route>
 

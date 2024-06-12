@@ -7,7 +7,7 @@ import { useHardware } from "../../contexts/hardwareContext";
 import { useState } from "react";
 
 function NewVoterModal({ closeModal, setFetchVoters }) {
-    const { device, fingerprint, setFingerprint, connectToHardware } = useHardware();
+    const { device, fingerprint, setFingerprint, connectToHardware, clearFingerprint } = useHardware();
     const [errors, setErrors] = useState({});
 
     const { id } = useParams();
@@ -56,12 +56,13 @@ function NewVoterModal({ closeModal, setFetchVoters }) {
                             { errors.name ? <ErrorMessage string={errors.name}/> : null }
                         </div>
                         <div className="mt-5 flex gap-3">
-                            {fingerprint.length === 512 ? <TbFingerprint className="text-6xl"/> : <TbFingerprintOff className="text-6xl"/>}
+                            {fingerprint.length === 768 ? <TbFingerprint className="text-6xl"/> : <TbFingerprintOff className="text-6xl"/>}
                             <div className="flex flex-col justify-center">                  
-                                {device ? <p className="bg-amber-400 rounded text-sm font-bold self-start px-1">Connected</p> : <button className="text-sm border border-black px-1 bg-gray-100 rounded self-start" onClick={(e) => {e.preventDefault(); connectToHardware()}}>Connect</button>}
-                                {fingerprint.length === 512 
+                                {device ? <p className="bg-amber-400 rounded text-sm font-bold self-start px-1">Connected</p> : <div className="text-sm border border-black px-1 bg-gray-100 rounded self-start hover:cursor-pointer hover:bg-gray-300" onClick={(e) => {e.preventDefault(); connectToHardware()}}>Connect</div>}
+                                {fingerprint.length === 768 
                                     ? <p className="text-sm">Fingerprint loaded</p>
                                     : <p className="text-sm">No Fingerprint loaded</p>}
+                                <div className="text-xs border border-black px-1 bg-gray-100 rounded self-start hover:cursor-pointer hover:bg-gray-300" onClick={clearFingerprint}>Clear fingerprint</div>
                                 { errors.fingerprint ? <ErrorMessage string={errors.fingerprint}/> : null }
                             </div>
                         </div>

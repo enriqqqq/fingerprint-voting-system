@@ -20,10 +20,8 @@ function Dashboard(){
                 if(fetchEvents) {
                     setLoading(true);
                     const response = await fetch('/test/api/events');
-                    console.log(response);
                     const data = await response.json();
                     setEvents(data);
-                    console.log(data);
                     
                     // TODO count the number of candidates and voters of each event
                     data.forEach(event => {

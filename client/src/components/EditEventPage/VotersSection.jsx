@@ -62,6 +62,7 @@ function VotersSection({ openFormModal, fetchVoters, setFetchVoters}) {
         } catch(error) {
             console.log(error);
         } finally {
+            setRemove(false);
             setFetchVoters(true);
         }
     }
@@ -80,7 +81,7 @@ function VotersSection({ openFormModal, fetchVoters, setFetchVoters}) {
                     <button className="border border-black px-2 py-1 text-sm bg-white" onClick={removeVoters}>Remove</button>
                 </div>
             }
-            <div className={`flex flex-col border gap-2 border-black h-60 overflow-auto px-2 pt-2 bg-white ${voters.length === 0 && "items-center justify-center"}`}>
+            <div className={`flex flex-col border gap-2 border-black h-60 overflow-auto px-2 py-2 bg-white ${voters.length === 0 && "items-center justify-center"}`}>
                 {
                     loading 
                         ? <p className="text-sm text-slate-800">Loading...</p>

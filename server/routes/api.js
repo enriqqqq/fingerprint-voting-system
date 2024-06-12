@@ -27,6 +27,9 @@ router.put('/events/:id/update', isAuth, EventController.update_event);
 // DELETE request for deleting an event
 router.delete('/events/:id/delete', isAuth, EventController.delete_event);
 
+// GET requet to start an event
+router.get('/events/:id/start', isAuth, EventController.start_event);
+
 /* ---------------------------
     VOTERS ROUTE
 --------------------------- */
@@ -45,6 +48,9 @@ router.get('/voters', isAuth, VoterController.list_get);
 
 // POST request to create a new voter
 router.post('/voters', isAuth, VoterController.create_post);
+
+// PUT request to update a voter
+router.put('/events/:event_id/voters/:voter_id/vote', isAuth, VoterController.cast_vote);
 
 /* ---------------------------
     BALLOTS ROUTE
