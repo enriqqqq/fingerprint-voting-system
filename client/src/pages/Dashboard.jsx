@@ -6,6 +6,7 @@ import DashboardInfo from "../components/Dashboard/DashboardInfo";
 import VotingStatistic from "../components/Dashboard/VotingStatistic";
 import AddButton from "../components/Dashboard/AddButton";
 import NewEventModal from "../components/Dashboard/NewEventModal";
+import { useHardware } from "../contexts/hardwareContext";
 
 function Dashboard(){
     const [showModal, setShowModal] = useState(false);
@@ -13,6 +14,7 @@ function Dashboard(){
     const [loading, setLoading] = useState(true);
     const [fetchEvents, setFetchEvents] = useState(true);
     const { user } = useUser();
+    const { device } = useHardware();
 
     useEffect(() => {
         (async() => {
@@ -50,7 +52,14 @@ function Dashboard(){
                         <DashboardInfo/>
                         <VotingStatistic />
                     </div>
-                    <p className="text-xl font-bold mt-7">Your Events</p>
+                    <div className="flex gap-3 items-center">
+                        <p className="text-xl font-bold mt-7">Your Events</p>
+                        {
+                            device ?
+                                <p className="text-sm text-green-500 mt-8">Device connected</p>
+                                : <p className="text-sm text-red-500 mt-8">Device not connected</p>
+                        }
+                    </div>
                     <div className="grid grid-cols-[repeat(auto-fill,minmax(380px,1fr))] gap-4 mt-3">
                         {
                             loading 

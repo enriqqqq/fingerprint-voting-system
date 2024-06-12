@@ -7,7 +7,7 @@ import { useHardware } from "../../contexts/hardwareContext";
 
 function EventCard({ event, fetchEventsHandler }) {
     const navigate = useNavigate();
-    const { connectToHardware, startVotingEvent, switchToLoadMode, votersToLoad, votingEventId } = useHardware();
+    const { connectToHardware, startVotingEvent, switchToLoadMode, votersToLoad, votingEventId, mode } = useHardware();
 
     async function deleteEvent() {
         try {
@@ -71,7 +71,7 @@ function EventCard({ event, fetchEventsHandler }) {
             <div className="flex items-center justify-between">
                 <button onClick={startVoting} className="bg-slate-400 px-7 py-2 rounded hover:brightness-75 font-semibold">Start</button>
                 <div className="flex gap-1">
-                    <div className="" onClick={() => { navigate(`/events/${event._id}`) }}>
+                    <div className="" onClick={() => { navigate(`/events/${event._id}`); mode.current = 0x02; }}>
                         <MdEdit className="bg-white text-2xl cursor-pointer rounded hover:brightness-75"/>
                     </div>
                     <div className="" onClick={deleteEvent}>

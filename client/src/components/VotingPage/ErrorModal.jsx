@@ -11,9 +11,9 @@ function ErrorModal({ buttonHandler }) {
                         <img className="h-40 w-auto" src={NoConnectionImage} alt="" />
                     </div>
                     <div className="px-5 py-5 flex flex-col items-center gap-1">
-                        <p className="font-bold text-lg text-center">Hardware Not Connected</p>
-                        <p className="text-sm text-center">Click the button to connect</p>
-                        <button className="mt-3 bg-slate-400 px-7 py-2 rounded hover:brightness-75 font-semibold" onClick={buttonHandler}>Connect</button>
+                        <p className="font-bold text-lg text-center">Hardware Disconnected</p>
+                        <p className="text-sm text-center">Please restart the event</p>
+                        <button className="mt-3 bg-slate-400 px-7 py-2 rounded hover:brightness-75 font-semibold" onClick={buttonHandler}>Go to Dashboard</button>
                     </div>
                     
                 </div>
