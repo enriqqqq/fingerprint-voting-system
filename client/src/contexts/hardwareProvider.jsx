@@ -6,6 +6,7 @@ import propTypes from 'prop-types';
 const DOWNLOAD_FINGERPRINT = 0x01;
 const FINGERPRINT_TEMPLATE_SIZE = 768;
 const READY_TO_SEND_FINGERPRINTS = [0x7A, 0x79];
+const SWITCH_TO_REGISTER_MODE = [0x78, 0x79];
 
 const NO_DEVICE = 1;
 const CANT_START_VOTING = 2;
@@ -93,6 +94,12 @@ function HardwareProvider({ children }) {
         // send code so hardware can change mode.
         const header = new Uint8Array([READY_TO_SEND_FINGERPRINTS[0], READY_TO_SEND_FINGERPRINTS[1]]);
         mode.current = LOAD_MODE;
+        await writer.current.write(header);
+    }
+
+    async function switchToRegisterMode() {
+        const header = new Uint8Array([SWITCH_TO_REGISTER_MODE[0], SWITCH_TO_REGISTER_MODE[1]]);
+        mode.current = REGISTER_MODE;
         await writer.current.write(header);
     }
 
@@ -230,7 +237,7 @@ function HardwareProvider({ children }) {
     }
 
     return (
-        <HardwareContext.Provider value={{ device, fingerprint, setFingerprint, connectToHardware, startVotingEvent, clearFingerprint, votersToLoad, mode, switchToLoadMode, ballotSelected, selectedBallotDisplay, setSelectedBallotDisplay, toast, votingEventId }}>
+        <HardwareContext.Provider value={{ device, fingerprint, setFingerprint, connectToHardware, startVotingEvent, clearFingerprint, votersToLoad, mode, switchToLoadMode, ballotSelected, selectedBallotDisplay, setSelectedBallotDisplay, toast, votingEventId, switchToRegisterMode }}>
             {children}
         </HardwareContext.Provider>
     )

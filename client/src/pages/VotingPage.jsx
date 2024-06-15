@@ -10,7 +10,7 @@ function VotingPage() {
     const navigate = useNavigate();
     const { id } = useParams();
     const [ballots, setBallots] = useState([]);
-    const { device, ballotSelected, selectedBallotDisplay, setSelectedBallotDisplay, toast, mode } = useHardware();
+    const { device, ballotSelected, selectedBallotDisplay, setSelectedBallotDisplay, toast, mode, switchToRegisterMode } = useHardware();
 
     useEffect(() => {
         // get ballots from the server
@@ -62,7 +62,7 @@ function VotingPage() {
             { device ? null : <ErrorModal buttonHandler={ () => {navigate('/'); mode.current = 0x02} } />}
             <Toast show={toast.show} message={toast.message}/>
             <div className="flex flex-col bg-gray-100 min-h-screen overflow-hidden">
-                <Header exitHandler={()=>{navigate('/'); mode.current = 0x02}}/>
+                <Header exitHandler={()=>{navigate('/'); switchToRegisterMode();}}/>
 
                 {/* display all ballot choices */}
                 <div className="flex justify-center flex-wrap gap-8 px-8 py-12">
