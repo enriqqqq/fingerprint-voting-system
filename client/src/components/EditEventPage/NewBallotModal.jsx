@@ -49,7 +49,7 @@ function NewBallotModal({ setFetchBallots, closeModal }) {
                         <div className="flex flex-col gap-1">
                             <label htmlFor="name" className="text-xs font-bold text-gray-600">NAME</label>
                             <input type="text" name="name" id="name" className="border border-black rounded px-2 py-2" />
-                            { errors.name ? <ErrorMessage string={errors.title}/> : null }
+                            { errors.name ? <ErrorMessage string={errors.name}/> : null }
                         </div>
                         <button type="submit" className="bg-slate-400 text-black mt-3 px-7 py-2 rounded hover:brightness-75 font-semibold">Create</button>
                     </form>

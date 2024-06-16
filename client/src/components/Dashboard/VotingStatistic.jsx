@@ -1,7 +1,8 @@
 function VotingStatistic(){
     return(
-        <div className="border flex-1 px-3 py-3 bg-white">
+        <div className="border flex-1 px-3 py-3 bg-white overflow-auto">
             <p className="font-bold">Last Voting Event Statistic Title</p>
+
         </div>
     )
 }

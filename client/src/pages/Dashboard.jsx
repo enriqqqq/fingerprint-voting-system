@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useUser } from "../contexts/userContext";
 import EventCard from "../components/Dashboard/EventCard";
-import Sidebar from "../components/Sidebar";
+import Sidebar from "../components/Sidebartest";
 import DashboardInfo from "../components/Dashboard/DashboardInfo";
 import VotingStatistic from "../components/Dashboard/VotingStatistic";
 import AddButton from "../components/Dashboard/AddButton";
@@ -24,12 +24,6 @@ function Dashboard(){
                     const response = await fetch('/test/api/events');
                     const data = await response.json();
                     setEvents(data);
-                    
-                    // TODO count the number of candidates and voters of each event
-                    data.forEach(event => {
-                        event.candidateCount = 20;
-                        event.voterCount = 20;
-                    });
                 }
             } catch (error) {
                 console.log(error);
@@ -43,17 +37,17 @@ function Dashboard(){
     return(
         <>
             {showModal && <NewEventModal closeModal={ () => setShowModal(false) } fetchEvents={ () => setFetchEvents(true) } />}
-            <div className="grid grid-cols-[1fr_5fr] h-screen bg-slate-50">
+            <div className="bg-slate-50 min-h-screen">
                 <Sidebar />
-                <div className="px-10 py-10 flex flex-col overflow-auto">
+                <div className="px-10 py-10 flex flex-col overflow-auto ml-64 min-h-screen">
                     <h1 className="text-xl font-bold">Dashboard</h1>
                     <p>Welcome, { user.username }</p>
-                    <div className="flex gap-7 mt-3">
+                    <div className="flex gap-7 mt-3 h-52">
                         <DashboardInfo/>
                         <VotingStatistic />
                     </div>
                     <div className="flex gap-3 items-center">
-                        <p className="text-xl font-bold mt-7">Your Events</p>
+                        <p className="text-xl font-bold mt-7">Your Events {loading ? '' : `(${events.length})`}</p>
                         {
                             device ?
                                 <p className="text-sm text-green-500 mt-8">Device connected</p>

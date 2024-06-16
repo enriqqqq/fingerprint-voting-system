@@ -9,6 +9,9 @@ import LoginPage from './pages/Login.jsx'
 import SignUp from './pages/SignUp.jsx'
 import Dashboard from './pages/Dashboard.jsx';
 import EditEventPage from './pages/EditEventPage.jsx';
+import AllBallots from './pages/AllBallots.jsx';
+import AllVoters from './pages/AllVoters.jsx';
+import ResultPage from './pages/ResultPage.jsx';
 import RequireAuth from './components/RequireAuth.jsx';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -27,7 +30,10 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             <Route element={ <RequireAuth/> }>
               <Route path="/" element={<Dashboard />} />
               <Route path="/voting/:id" element={<VotingPage />} />
-              <Route path="/events/:id" element={<EditEventPage />} />
+              <Route path="/events/:id/edit" element={<EditEventPage />} />
+              <Route path="/events/:id/" element={<ResultPage />} />
+              <Route path="/ballots" element={<AllBallots />} />
+              <Route path="/voters" element={<AllVoters />}/>
             </Route>
 
           </Routes>

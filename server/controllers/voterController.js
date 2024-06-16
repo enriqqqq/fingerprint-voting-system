@@ -52,7 +52,39 @@ exports.list_get_event = asyncHandler(async (req, res, next) => {
 });
 
 exports.list_get = asyncHandler(async (req, res, next) => {
-    const voters = await Voter.find({ user_id: req.user._id });
+    const voters = await Voter.aggregate([
+        {
+            $match: {
+                user_id: req.user._id
+            }
+        },
+        {
+            $lookup: {
+                from: "events",
+                localField: "event_id",
+                foreignField: "_id",
+                as: "eventDetails"
+            }
+        },
+        {
+            $unwind: "$eventDetails"
+        },
+        {
+            $project: {
+                name: 1,
+                event_id: 1,
+                created_at: 1,
+                event_id: 1,
+                event_title: "$eventDetails.title"
+            }
+        },
+        {
+            $sort: {
+                created_at: -1
+            }
+        }
+    ]);
+
     res.status(200).json({ voters });
 });
 
@@ -147,7 +179,9 @@ exports.cast_vote = [
             return;
         }
 
-        if(voter.choice !== null) {
+        const selectedBallot = await Ballot.findById(voter.choice);
+
+        if(selectedBallot) {
             res.status(400).json({ message: "Voter has already voted" });
             return;
         }

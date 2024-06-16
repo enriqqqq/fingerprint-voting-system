@@ -27,8 +27,11 @@ router.put('/events/:id/update', isAuth, EventController.update_event);
 // DELETE request for deleting an event
 router.delete('/events/:id/delete', isAuth, EventController.delete_event);
 
-// GET requet to start an event
+// GET request to start an event
 router.get('/events/:id/start', isAuth, EventController.start_event);
+
+// GET request to get results of an event
+router.get('/events/:id/results', isAuth, EventController.get_results);
 
 /* ---------------------------
     VOTERS ROUTE
@@ -59,6 +62,9 @@ router.put('/events/:event_id/voters/:voter_id/vote', isAuth, VoterController.ca
 // POST request to create a new ballot
 router.post('/ballots', isAuth, BallotController.create_post);
 
+// GET request to get all ballots of a user
+router.get('/ballots', isAuth, BallotController.list_get);
+
 // GET request to get all ballots in an event of a user
 router.get('/events/:event_id/ballots', isAuth, BallotController.list_get_event);
 
@@ -74,5 +80,8 @@ router.put('/events/:event_id/ballots/:ballot_id/update', isAuth, BallotControll
 
 // POST request for creating/registering a user
 router.post('/users', UserController.create_post);
+
+// GET request for getting user stats
+router.get('/users/stats', isAuth, UserController.get_stats);
 
 module.exports = router;

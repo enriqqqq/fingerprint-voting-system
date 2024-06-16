@@ -42,7 +42,39 @@ exports.create_post = [
 ]
 
 exports.list_get = asyncHandler(async (req, res, next) => {
-    const events = await Event.find({ user_id: req.user._id });
+    // for every event, get the voter and the ballot count
+    const events = await Event.aggregate([
+        {
+            $lookup: {
+                from: 'voters',
+                localField: '_id',
+                foreignField: 'event_id',
+                as: 'voters'
+            }
+        },
+        {
+            $lookup: {
+                from: 'ballots',
+                localField: '_id',
+                foreignField: 'event_id',
+                as: 'ballots'
+            }
+        },
+        {
+            $match: {
+                user_id: new mongoose.Types.ObjectId(req.user._id)
+            }
+        },
+        {
+            $project: {
+                title: 1,
+                description: 1,
+                voterCount: { $size: '$voters' },
+                candidateCount: { $size: '$ballots' }
+            }
+        }
+    ]);
+
     res.status(200).json(events);
 });
 
@@ -144,9 +176,42 @@ exports.start_event = asyncHandler(async (req, res, next) => {
         code: 0x00,    
         voters 
     });
+});
 
-    // event.started = true;
-    // await event.save();
-    // res.status(200).json(event);
+exports.get_results = asyncHandler(async (req, res, next) => {
+    const event = await Event.findById(req.params.id);
+
+    if(!event) {
+        res.status(404).json({ message: 'Event not found.' });
+        return;
+    }
+
+    if(!event.user_id.equals(req.user._id)) {
+        res.status(403).json({ message: 'You do not have permission to view this event.' });
+        return;
+    }
+
+    const ballots = await Ballot.find({ event_id: event._id });
+
+    if(!ballots.length > 1) {
+        res.status(400).json({ message: 'No results available.' });
+        return;
+    }
+
+    const voters = await Voter.find({ event_id: event._id });
+
+    if(voters.length === 0) {
+        res.status(400).json({ message: 'No voters have been added to this event.' });
+        return;
+    }
+
+    const results = [];
+
+    for(let i = 0; i < ballots.length; i++) {
+        const votes = await Voter.find({ event_id: event._id, choice: ballots[i]._id });
+        results.push({...ballots[i]._doc, votes: votes});
+    }
+
+    res.status(200).json({ results, voters, event });
 });
 

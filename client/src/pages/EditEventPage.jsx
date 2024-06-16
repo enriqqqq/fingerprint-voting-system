@@ -66,27 +66,29 @@ function EditEventPage() {
     }
 
     return (
-        loading 
-            ? <p>Loading...</p> 
-            : 
-            <>
-                { showNewVoterModal && <NewVoterModal closeModal={() => {setShowNewVoterModal(false)}} setFetchVoters={setFetchVoters} /> }
-                { showNewBallotModal && <NewBallotModal closeModal={()=> {setShowNewBallotModal(false)}} setFetchBallots={setFetchBallots}/>}
-                <div className="grid grid-cols-[16rem_5fr] bg-slate-50 overflow-hidden">
-                    <div>{/* Temporary fix for fixed sidebar */}</div>
-                    <Sidebar />
-                    <div className="px-10 py-10 flex flex-col">
-                        <h1 className="font-bold text-xl">Edit Event</h1>
-                        <p className="text-sm">{ id }</p>
-                        <div className="flex flex-col flex-1">
-                            <EventForm event={event} />
-                            <VotersSection openFormModal={()=>{setShowNewVoterModal(true)}} fetchVoters={fetchVoters} setFetchVoters={setFetchVoters}/>
-                            <BallotsSection openFormModal={()=>{setShowNewBallotModal(true)}} fetchBallots={fetchBallots} setFetchBallots={setFetchBallots}/>
-                        </div>
-                        <button className="bg-slate-400 text-black px-7 py-2 rounded hover:brightness-75 font-semibold self-start mt-auto" onClick={startVoting}>Start</button>
+        <>
+            { showNewVoterModal && <NewVoterModal closeModal={() => {setShowNewVoterModal(false)}} setFetchVoters={setFetchVoters} /> }
+            { showNewBallotModal && <NewBallotModal closeModal={()=> {setShowNewBallotModal(false)}} setFetchBallots={setFetchBallots}/>}
+            <div className="bg-slate-50 overflow-hidden">
+                <Sidebar />
+                <div className="px-10 py-10 flex flex-col ml-64">
+                    <h1 className="font-bold text-xl">Edit Event</h1>
+                    <p className="text-sm">{ id }</p>
+                    <div className="flex flex-col flex-1">
+                        {
+                            loading 
+                                ? <p>Loading...</p>
+                                : <>
+                                    <EventForm event={event} />
+                                    <VotersSection openFormModal={()=>{setShowNewVoterModal(true)}} fetchVoters={fetchVoters} setFetchVoters={setFetchVoters}/>
+                                    <BallotsSection openFormModal={()=>{setShowNewBallotModal(true)}} fetchBallots={fetchBallots} setFetchBallots={setFetchBallots}/>
+                                  </>
+                        }
                     </div>
+                    <button className="bg-slate-400 text-black px-7 py-2 rounded hover:brightness-75 font-semibold self-start mt-auto" onClick={startVoting}>Start</button>
                 </div>
-            </>
+            </div>
+        </>
     );
 }
 

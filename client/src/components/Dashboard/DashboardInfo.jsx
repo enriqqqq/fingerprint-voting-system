@@ -1,27 +1,58 @@
 import propTypes from 'prop-types';
+import { useEffect, useState } from 'react';
 
 function DashboardInfo() {
+    const [stats, setStats] = useState({});
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                setLoading(true);
+                const response = await fetch('/test/api/users/stats');
+                if(response.status !== 200) {
+                    console.log('Error');
+                    setStats({voters: 0, ballots: 0});
+                } else {
+                    const data = await response.json();
+                    setStats(data);
+                }
+            } catch (error) {
+                console.log(error);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        fetchData();
+    }, [])
+
     return (
-        <div className="grid grid-cols-2 grid-rows-2 bg-white">
-            <Items title="Ballots Registered" span={1} />
-            <Items title="Voters Registered" span={1} />
-            <Items title="Voting Events" span={2} />
+        <div className="flex flex-col bg-white">
+            {
+                loading 
+                    ? <p className="`border px-7 py-5 flex flex-col justify-center flex-1" >Loading...</p>
+                    : <>
+                        <Items title="Ballots Registered" data={stats.ballots} />
+                        <Items title="Voters Registered" data={stats.voters}/>
+                      </>
+            }
         </div>
     )
 }
 
-function Items({ title, span }) {
+function Items({ title, data }) {
     return (
-        <div className={`col-span-${span} border px-7 py-5`}>
+        <div className="border px-7 py-5 flex flex-col justify-center flex-1">
             <p className="">{title}</p>
-            <p className="font-bold text-lg">30</p>
+            <p className="font-bold text-lg">{data}</p>
         </div>
     )
 }
 
 Items.propTypes = {
     title: propTypes.string.isRequired,
-    span: propTypes.number
+    data: propTypes.number.isRequired
 }
 
 export default DashboardInfo;

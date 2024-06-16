@@ -59,6 +59,29 @@ exports.list_get_event = asyncHandler(async (req, res, next) => {
     res.status(200).json({ballots});
 });
 
+exports.list_get = asyncHandler(async (req, res, next) => {
+    const ballots = await Ballot.aggregate([
+        {
+            $lookup: {
+                from: 'events', // collection name in mongodb for Event model
+                localField: 'event_id',
+                foreignField: '_id',
+                as: 'eventDetails'
+            }
+        },
+        {
+            $unwind: '$eventDetails' // unwind array returned by $lookup
+        },
+        {
+            $match: {
+                'eventDetails.user_id': new mongoose.Types.ObjectId(req.user._id)
+            }
+        }
+    ]);
+
+    res.status(200).json({ballots});
+});
+
 exports.delete_post = asyncHandler(async (req, res, next) => {
     const deletedBallot = await Ballot.findByIdAndDelete(req.params.ballot_id);
     if(!deletedBallot) {
