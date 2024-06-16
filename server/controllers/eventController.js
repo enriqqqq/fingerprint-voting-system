@@ -66,13 +66,18 @@ exports.list_get = asyncHandler(async (req, res, next) => {
             }
         },
         {
+            $sort: {
+                created_at: -1
+            }
+        },
+        {
             $project: {
                 title: 1,
                 description: 1,
                 voterCount: { $size: '$voters' },
-                candidateCount: { $size: '$ballots' }
+                candidateCount: { $size: '$ballots' },
             }
-        }
+        },
     ]);
 
     res.status(200).json(events);
@@ -171,6 +176,9 @@ exports.start_event = asyncHandler(async (req, res, next) => {
         return;
     }
 
+    event.last_started = new Date();
+    await event.save();
+
     res.status(200).json({ 
         message: 'Event started successfully, starting to load fingerprints', 
         code: 0x00,    
@@ -214,4 +222,10 @@ exports.get_results = asyncHandler(async (req, res, next) => {
 
     res.status(200).json({ results, voters, event });
 });
+
+exports.get_latest_started = asyncHandler(async(req,res,next)=> {
+    const lastStartedEvent = await Event.find({ user_id: req.user._id, last_started: { $ne: null } }).sort({ last_started: -1 }).limit(1);
+    res.status(200).json(lastStartedEvent);
+    return;
+})
 

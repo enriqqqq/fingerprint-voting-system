@@ -15,6 +15,9 @@ const { isAuth } = require('../lib/authMiddleware');
 // POST request for creating an event
 router.post('/events', isAuth, EventController.create_post);
 
+// GET request to get latest started event
+router.get('/events/latest', isAuth, EventController.get_latest_started);
+
 // GET request for getting single event
 router.get('/events/:id', isAuth, EventController.get_event);
 

@@ -40,8 +40,8 @@ function NewEventModal({ closeModal, fetchEvents }) {
 
     return(
         <>
-            <div className="w-full h-screen bg-black fixed z-10 opacity-75"></div>
-            <div className="flex justify-center items-center h-screen w-full fixed z-20 border-box ">
+            <div className="w-full h-screen bg-black fixed z-20 opacity-75"></div>
+            <div className="flex justify-center items-center h-screen w-full fixed z-30 border-box ">
                 <div className="bg-white rounded flex flex-col py-6 px-6">
                     <div className="flex items-center">
                         <p className="font-bold text-xl">Create New Event</p>
