@@ -61,7 +61,7 @@ function VotingPage() {
         <>
             { device ? null : <ErrorModal buttonHandler={ () => {navigate('/'); mode.current = 0x02} } />}
             <Toast show={toast.show} message={toast.message}/>
-            <div className="flex flex-col bg-gray-100 min-h-screen overflow-hidden">
+            <div className="flex flex-col bg-slate-100 min-h-screen overflow-hidden">
                 <Header exitHandler={()=>{navigate('/'); switchToRegisterMode();}}/>
 
                 {/* display all ballot choices */}

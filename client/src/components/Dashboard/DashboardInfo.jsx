@@ -1,5 +1,7 @@
 import propTypes from 'prop-types';
 import { useEffect, useState } from 'react';
+import NumericDataBlock from '../ResultPage/NumericDataBlock';
+import { FaUserGroup } from "react-icons/fa6";
 
 function DashboardInfo() {
     const [stats, setStats] = useState({});
@@ -28,13 +30,13 @@ function DashboardInfo() {
     }, [])
 
     return (
-        <div className="flex flex-col bg-white">
+        <div className="flex flex-col gap-1 w-64 max-lg:w-full">
             {
                 loading 
                     ? <p className="`border px-7 py-5 flex flex-col justify-center flex-1" >Loading...</p>
                     : <>
-                        <Items title="Ballots Registered" data={stats.ballots} />
-                        <Items title="Voters Registered" data={stats.voters}/>
+                        <NumericDataBlock data={stats.ballots} text="Ballots Created" icon={<FaUserGroup className="text-5xl fill-pink-300"/>} bgcolor="bg-pink-500"/>
+                        <NumericDataBlock data={stats.voters} text="Voters Registered" icon={<FaUserGroup className="text-5xl fill-orange-300"/>} bgcolor="bg-orange-500"/>
                       </>
             }
         </div>

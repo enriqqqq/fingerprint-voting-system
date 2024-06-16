@@ -53,7 +53,7 @@ function BallotsSection({ openFormModal, fetchBallots, setFetchBallots }) {
             <p className="font-bold text-lg mt-5">Ballots</p>
 
             {/* 100vw = max width, 16rem = width of sidebar, 5rem = 2*padding-x, 17px = width of scrollbar-y (chrome) */}
-            <div className="flex flex-1 overflow-auto w-[calc(100vw_-_16rem_-_5rem_-_17px)]">
+            <div className="flex flex-1 overflow-auto w-[calc(100vw_-_16rem_-_5rem_-_17px)] max-sm:w-[calc(100vw_-_5rem_-_17px)]">
                 <div className="flex gap-2 items-center w-100 mb-2">
                     <div onClick={openFormModal} className="hover:cursor-pointer h-96 w-72 border-2 border-gray-400 border-dashed rounded-xl flex flex-col justify-center items-center">
                         <IoMdAdd className="text-3xl fill-gray-500"/>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import Sidebar from "../components/Sidebartest";
+import Sidebar from "../components/Sidebar";
 import propTypes from 'prop-types';
+import SmallNav from "../components/SmallNav";
 
 function AllBallots() {
     const [ballots, setBallots] = useState([]);
@@ -28,7 +29,8 @@ function AllBallots() {
     return (
         <div className="bg-slate-50 min-h-screen">
             <Sidebar />
-            <div className="px-10 py-10 flex flex-col overflow-auto ml-64 min-h-screen">
+            <div className="px-10 py-10 flex flex-col overflow-auto ml-64 min-h-screen transition-all duration-300 ease-out max-sm:ml-0">
+                <SmallNav />
                 <h1 className="text-xl font-bold">All Ballots {loading ? '' : `(${ballots.length})`}</h1>
                 <div className="grid grid-cols-[repeat(auto-fill,minmax(380px,1fr))] gap-4 mt-3">
                     {

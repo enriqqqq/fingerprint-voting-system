@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { useUser } from "../contexts/userContext";
 import EventCard from "../components/Dashboard/EventCard";
-import Sidebar from "../components/Sidebartest";
+import Sidebar from "../components/Sidebar";
 import DashboardInfo from "../components/Dashboard/DashboardInfo";
 import VotingStatistic from "../components/Dashboard/VotingStatistic";
 import AddButton from "../components/Dashboard/AddButton";
 import NewEventModal from "../components/Dashboard/NewEventModal";
+import SmallNav from "../components/SmallNav";
 import { useHardware } from "../contexts/hardwareContext";
 
 function Dashboard(){
@@ -39,10 +40,11 @@ function Dashboard(){
             {showModal && <NewEventModal closeModal={ () => setShowModal(false) } fetchEvents={ () => setFetchEvents(true) } />}
             <div className="bg-slate-50 min-h-screen">
                 <Sidebar />
-                <div className="px-10 py-10 flex flex-col overflow-auto ml-64 min-h-screen">
+                <div className="px-10 py-10 flex flex-col overflow-auto ml-64 min-h-screen transition-all duration-300 ease-out max-sm:ml-0">
+                    <SmallNav />
                     <h1 className="text-xl font-bold">Dashboard</h1>
                     <p>Welcome, { user.username }</p>
-                    <div className="flex gap-7 mt-3 h-52">
+                    <div className="flex gap-7 mt-3 max-lg:flex-col">
                         <DashboardInfo/>
                         <VotingStatistic />
                     </div>

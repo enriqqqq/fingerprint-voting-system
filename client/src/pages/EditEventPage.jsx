@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useHardware } from "../contexts/hardwareContext";
-import Sidebar from "../components/Sidebartest";
+import Sidebar from "../components/Sidebar";
 import EventForm from "../components/EditEventPage/EventForm";
 import VotersSection from "../components/EditEventPage/VotersSection";
 import BallotsSection from "../components/EditEventPage/BallotsSection";
 import NewVoterModal from "../components/EditEventPage/NewVoterModal";
 import NewBallotModal from "../components/EditEventPage/NewBallotModal";
+import SmallNav from "../components/SmallNav";
 
 function EditEventPage() {
     const { id } = useParams();
@@ -71,7 +72,8 @@ function EditEventPage() {
             { showNewBallotModal && <NewBallotModal closeModal={()=> {setShowNewBallotModal(false)}} setFetchBallots={setFetchBallots}/>}
             <div className="bg-slate-50 overflow-hidden">
                 <Sidebar />
-                <div className="px-10 py-10 flex flex-col ml-64">
+                <div className="px-10 py-10 flex flex-col ml-64 transition-all duration-300 ease-out max-sm:ml-0">
+                    <SmallNav />
                     <h1 className="font-bold text-xl">Edit Event</h1>
                     <p className="text-sm">{ id }</p>
                     <div className="flex flex-col flex-1">
