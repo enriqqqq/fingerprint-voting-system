@@ -18,13 +18,18 @@ function EditEventPage() {
     const [showNewBallotModal, setShowNewBallotModal] = useState(false);
     const [fetchVoters, setFetchVoters] = useState(true);
     const [fetchBallots, setFetchBallots] = useState(true);
-    const { connectToHardware, startVotingEvent } = useHardware();
+    const { connectToHardware, startVotingEvent, switchToLoadMode, votersToLoad, votingEventId } = useHardware();
 
     useEffect(() => {
         (async() => {
             try {
                 // Fetch the event data from the server
                 setLoading(true);
+
+                // Set the fetchVoters and fetchBallots to true to fetch the voters and ballots
+                setFetchVoters(true);
+                setFetchBallots(true);
+
                 const response = await fetch(`/test/api/events/${id}`);
                 
                 // If the id is not a valid ObjectId or the event does not exist, redirect to the home page
@@ -44,7 +49,7 @@ function EditEventPage() {
     }, [id, navigate]);
 
     const startVoting = async () => {
-        const res = await startVotingEvent(id);
+        const res = await startVotingEvent(event._id);
 
         if(res.code == 0x01) {
             await connectToHardware();
@@ -57,13 +62,23 @@ function EditEventPage() {
             return;
         }
 
-        if(res.code == 0x00) {
-            navigate(`/voting/${id}`);
+        const response = await fetch(`/test/api/events/${event._id}/voters`);
+
+        if(response.status !== 200) {
+            console.log('Error');
+            return;
         }
 
-        // on /voting/id, run a useEffect.
-        // to load the ballots,
-        // to load fingerprints to the sensor
+        const data = await response.json();
+
+        votersToLoad.current = data.voters;
+        votingEventId.current = event._id;
+
+        await switchToLoadMode();
+
+        if(res.code == 0x00) {
+            navigate(`/voting/${event._id}`);
+        }
     }
 
     return (

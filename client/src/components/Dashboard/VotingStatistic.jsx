@@ -24,7 +24,6 @@ function VotingStatistic(){
                 if(response2.status !== 200) {
                     console.log('Failed to fetch results');
                 } else {
-                    console.log(data2);
                     setStats(data2);
                     setDisplayChart(true);
                 }
@@ -38,7 +37,6 @@ function VotingStatistic(){
 
     function dataProjection(data) {
         return data.map((item) => {
-            console.log(item.votes.length);
             return {
                 name: item.name,
                 votes: item.votes.length
@@ -59,7 +57,7 @@ function VotingStatistic(){
         <div className="border flex-1 px-5 py-5 bg-white overflow-auto">
             <p className="font-bold">Last Voting Event Statistic</p>
             {displayChart && <p className="text-sm font-semibold">{event.title} <span className="text-xs font-normal">{event._id}</span></p>}
-            <div className="mt-7 h-44 max-lg:h-64"> {/* this also defines the height for DashboardInfo when screen > lg */}
+            <div className="mt-7 mb-7 h-44 max-lg:h-64"> {/* this also defines the height for DashboardInfo when screen > lg */}
                 {
                     loading
                         ? <div className="flex flex-col justify-center items-center h-full">Loading...</div>

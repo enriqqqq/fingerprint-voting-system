@@ -21,13 +21,13 @@ function VotersSection({ openFormModal, fetchVoters, setFetchVoters}) {
                         const data = await response.json();
                         setVoters(data.voters);
                     }
+                    setFetchVoters(false);
                 }
             } catch(error) {
                 console.log(error);
                 setVoters([]);
             } finally {
                 setLoading(false);
-                setFetchVoters(false);
             }
         })();
     }, [id, fetchVoters, setFetchVoters]);
@@ -51,14 +51,13 @@ function VotersSection({ openFormModal, fetchVoters, setFetchVoters}) {
 
     const removeVoters = async () => {
         try {
-            Array.from(removeList).forEach(async (voterId) => {
-                const response = await fetch(`/test/api/events/${id}/voters/${voterId}/delete`, {
+            const removePromises = Array.from(removeList).map((voterId) => {
+                return fetch(`/test/api/events/${id}/voters/${voterId}/delete`, {
                     method: "DELETE"
                 });
-                if(response.status === 200) {
-                    setVoters(voters.filter((voter) => voter._id !== voterId));
-                }
             });
+
+            await Promise.all(removePromises);
         } catch(error) {
             console.log(error);
         } finally {

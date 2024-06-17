@@ -107,6 +107,7 @@ function HardwareProvider({ children }) {
         const votersCount = votersToLoad.current.length;
 
         for(let i = 0; i < votersCount; i++) {
+            console.time('fingerprint sent');
             const voter = votersToLoad.current[i];
             const voterFingerprint = new Uint8Array(voter.fingerprint);
 
@@ -118,13 +119,12 @@ function HardwareProvider({ children }) {
 
             // get ack
             const { value } = await reader.current.read();
-            console.log(value);
             if(value[0] !== 0x00) {
                 console.log('ack is not correct');
                 mode.current = REGISTER_MODE;
                 return 0x01;   
             } // if ack is not correct, return 0x01
-            console.log('fingerprint sent idx:', i+1);
+            console.timeEnd('fingerprint sent');
         }
 
         await writer.current.write(new Uint8Array([0x00])); // tell hardware that we are done sending fingerprints
