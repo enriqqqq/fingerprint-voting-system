@@ -59,7 +59,7 @@ exports.create_post = [
 
             // save user
             await user.save();
-            res.status(201).json(user);
+            res.status(201).json({user});
         });
     })
 ]

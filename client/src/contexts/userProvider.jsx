@@ -33,6 +33,32 @@ function UserProvider({ children }) {
         }
     }
 
+    async function signup(e){
+        e.preventDefault();
+        const username = e.target.username.value;
+        const password = e.target.password.value;
+        const c_password = e.target.c_password.value;
+
+        const response = await fetch('/test/api/users', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username, password, confirmPassword: c_password})
+        });
+        
+        const data = await response.json();
+
+        if(!data.user) {
+            navigate('/signup');
+            return data.message;
+        }
+        else {
+            setUser(data.user);
+            navigate('/');
+        }
+    }
+
     async function logout() {
         const response = await fetch('/test/logout', {
             method: 'POST',
@@ -67,7 +93,7 @@ function UserProvider({ children }) {
     }, [location]); // run this effect everytime the location changes
 
     return (
-        <userContext.Provider value={{ user, auth_loading, login, logout }}>
+        <userContext.Provider value={{ user, auth_loading, login, logout, signup }}>
             {children}
         </userContext.Provider>
     );

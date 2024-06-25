@@ -236,8 +236,8 @@ uint8_t Adafruit_Fingerprint::emptyDatabase(void) {
 uint8_t Adafruit_Fingerprint::fingerFastSearch(void) {
   fingerID = 0xFFFF;
   confidence = 0xFFFF;
-  // high speed search of slot #1 starting at page 0x0000 and page #0x00A3
-  uint8_t packet[] = {FINGERPRINT_HISPEEDSEARCH, 0x01, 0x00, 0x00, 0x00, 0xA3};
+  // high speed search of slot #1 starting at page 0x0000 and page #0x00FF
+  uint8_t packet[] = {FINGERPRINT_HISPEEDSEARCH, 0x01, 0x00, 0x00, 0x00, 0xFF};
   writePacket(theAddress, FINGERPRINT_COMMANDPACKET, sizeof(packet)+2, packet);
   uint8_t len = getReply(recvPacket);
 

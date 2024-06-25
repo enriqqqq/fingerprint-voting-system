@@ -20,7 +20,7 @@ int mode;
 uint8_t replyBuffer[10];
 uint8_t replyIdx = 0;
 
-uint8_t vdot_idx = 0; // for voting mode
+uint8_t vdot_idx = 0; // for voting mode (display only)
 
 void setup() {
   Serial.begin(9600);
