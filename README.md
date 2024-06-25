@@ -1,0 +1,1 @@
+![test](https://github.com/enriqqqq/fingerprint-voting-system/blob/main/images/all_ballots_voters.png)
