@@ -1,5 +1,7 @@
 ## Fingerprint Voting System with Web App
-This is a fingerprint voting system using Arduino and AS608 Fingerprint Sensor
+This is a fingerprint voting system using Arduino and AS608 Fingerprint Sensor with WEb App to manage voting and run voting events.
+
+Video Demo: [https://drive.google.com/file/d/1ZMTjOY3dZrMbYA2wO-2SEaguJCC8O749/view?usp=sharing](https://drive.google.com/file/d/1ZMTjOY3dZrMbYA2wO-2SEaguJCC8O749/view?usp=sharing)
 
 ## Sign Up Page
 ![signup](https://github.com/enriqqqq/fingerprint-voting-system/blob/main/images/sign_up.png)
